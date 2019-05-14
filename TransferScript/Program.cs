@@ -25,6 +25,19 @@ using Microsoft.TeamFoundation.WorkItemTracking;
 
 namespace WordReader
 {
+
+    struct TestCase
+    {
+        public int nLot,
+                   nDocument;
+
+        public string champ,
+                      test,
+                      expected;
+
+        public bool result;
+                      
+    }
     class Program
     {
 
@@ -46,7 +59,7 @@ namespace WordReader
 
             // Define an object to pass to the API for missing parameters
             object missing = System.Type.Missing;
-            doc = word.Documents.Open(@"D:\RQemploi\WordReader\TestDoc.docx",
+            doc = word.Documents.Open(@"D:\RQemploi\TestDoc.docx",
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
