@@ -6,12 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 //word API
-using Word = Microsoft.Office.Interop.Word;
+using Microsoft.Office.Interop.Word;
 
 //MTM/TFS API
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.TestManagement.Client;
 using Microsoft.TeamFoundation.WorkItemTracking;
+
 
 
 
@@ -26,16 +27,18 @@ using Microsoft.TeamFoundation.WorkItemTracking;
 namespace WordReader
 {
 
-    struct TestCase
+    public struct TestCase
     {
-        public int nLot,
-                   nDocument;
 
-        public string champ,
+        public string nLot,
+                      nDocument,
+                      champ,
                       test,
                       expected;
 
-        public bool result;
+        public bool result1,
+                    result2;
+
                       
     }
     class Program
@@ -54,8 +57,8 @@ namespace WordReader
         static void Main(string[] args)
         {
 
-            Word.Application word = new Word.Application();
-            Word.Document doc = new Word.Document();
+            Application word = new Application();
+            Document doc = new Document();
 
             // Define an object to pass to the API for missing parameters
             object missing = System.Type.Missing;
@@ -65,25 +68,64 @@ namespace WordReader
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing);
 
-            List<string> data = new List<string>();
-            for (int i = 0; i < doc.Paragraphs.Count; i++)
+            List<TestCase> data = new List<TestCase>();
+
+            foreach(Table table in doc.Tables)
             {
-                string temp = doc.Paragraphs[i + 1].Range.Text.Trim();
-                if (temp != string.Empty)
+                for(int i = 0; i < table.Rows.Count; i++)
+                {
+                    TestCase temp = new TestCase();
+                    int cellNum = 0;
+                    for(int j = 0; j < table.Columns.Count; j++)
+                    {
+                        Cell cell = table.Cell(i, j);
+                        switch (cellNum)
+                        {
+                            case 0:
+                                temp.nLot = cell.Range.Text;
+                            break;
+                            case 1:
+                                temp.nDocument = cell.Range.Text;
+                            break;
+                            case 2:
+                                temp.champ = cell.Range.Text;
+                            break;
+                            case 3:
+                                temp.test = cell.Range.Text;
+                            break;
+                            case 4:
+                                temp.expected = cell.Range.Text;
+                            break;
+                            case 5:
+                                temp.result1 = (cell.Range.Text == "OK");
+                                break;
+                            case 6:
+                                temp.result2 = (cell.Range.Text == "OK");
+                            break;
+                        }
+
+                        cellNum++;
+                        
+                    }
                     data.Add(temp);
+                }
             }
 
-            for (int i = 0; i < doc.Paragraphs.Count; i++)
-            {
-                Console.WriteLine(data[i]);
-            }
+            Console.WriteLine(data[0].nLot);
+            Console.WriteLine(data[0].nDocument);
+            Console.WriteLine(data[0].champ);
+            Console.WriteLine(data[0].test);
+            Console.WriteLine(data[0].expected);
+            Console.WriteLine(data[0].result1);
+            Console.WriteLine(data[0].result2);
+            
 
             Console.ReadLine();
 
-            ((Word._Document)doc).Close();
-            ((Word._Application)word).Quit();
+            ((_Document)doc).Close();
+            ((_Application)word).Quit();
 
-
+            /*
             //MTM
 
             string serverurl = "http://localhost:8080/tfs";
@@ -124,7 +166,7 @@ namespace WordReader
             suite.Entries.Add(testCase);
             plan.Save();
 
-
+            */
         }
 
     }
