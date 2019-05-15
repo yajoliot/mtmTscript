@@ -101,14 +101,27 @@ namespace WordReader
                 break;
             }
 
-            //adding the test case to the suite
+            //creating the test case to the suite
             ITestCase testCase = proj.TestCases.Create();
             testCase.Title = "Verify X";
+
+            //adding a test step to the test case
+            ITestStep testStep = testCase.CreateTestStep();
+            testStep.Title = "Test step title";
+            testStep.ExpectedResult = "Test step expected result";
+            testCase.Actions.Add(testStep);
+
+            //saving the test case to the project
             testCase.Save();
 
-            IdAndName defaultConfigIdAndName = new IdAndName(defaultConfig.Id, defaultConfig.Name);
+            //setting configs i guess?
+            IdAndName defaultConfigidAndName = new IdAndName(defaultConfig.Id, defaultConfig.Name);
+            suite.SetDefaultConfigurations(new IdAndName[] { defaultConfigidAndName });
 
+            //adding test cases to the new suite
             suite.Entries.Add(testCase);
+
+            //saving the test plan
             plan.Save();
 
 
