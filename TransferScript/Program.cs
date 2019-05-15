@@ -61,7 +61,7 @@ namespace WordReader
 
             // Define an object to pass to the API for missing parameters
             object missing = System.Type.Missing;
-            doc = word.Documents.Open(@"D:\RQemploi\PALTestSample.docx",
+            doc = word.Documents.Open(@"D:\RQemploi\DA0_Devis_RAC_PAL18.docx",
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
