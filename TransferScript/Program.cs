@@ -34,10 +34,9 @@ namespace WordReader
                       nDocument,
                       champ,
                       test,
-                      expected;
-
-        public bool result1,
-                    result2;
+                      expected,
+                      result1,
+                      result2;
 
                       
     }
@@ -74,58 +73,66 @@ namespace WordReader
             {
                 for(int i = 1; i <= table.Rows.Count; i++)
                 {
+                    bool isHeader = false;
                     TestCase temp = new TestCase();
                     int cellNum = 0;
                     for(int j = 1; j <= table.Columns.Count; j++)
                     {
-                        Cell cell = table.Cell(i, j);
-                        switch (cellNum)
-                        {
-                            case 0:
-                                temp.nLot = cell.Range.Text;
-                            break;
-                            case 1:
-                                temp.nDocument = cell.Range.Text;
-                            break;
-                            case 2:
-                                temp.champ = cell.Range.Text;
-                            break;
-                            case 3:
-                                temp.test = cell.Range.Text;
-                            break;
-                            case 4:
-                                temp.expected = cell.Range.Text;
-                            break;
-                            case 5:
-                                temp.result1 = (cell.Range.Text == "OK");
-                            break;
-                            case 6:
-                                temp.result2 = (cell.Range.Text == "OK");
-                            break;
-                        }
-
-                        cellNum++;
                         
+                        Cell cell = null;
+                        try
+                        {
+                            cell = table.Cell(i, j);
+                        }
+                        catch (System.Runtime.InteropServices.COMException e)
+                        {
+                            isHeader = true;
+                        }
+                        if (!isHeader)
+                        {
+                            switch (cellNum)
+                            {
+                                case 0:
+                                    temp.nLot = cell.Range.Text;
+                                    break;
+                                case 1:
+                                    temp.nDocument = cell.Range.Text;
+                                    break;
+                                case 2:
+                                    temp.champ = cell.Range.Text;
+                                    break;
+                                case 3:
+                                    temp.test = cell.Range.Text;
+                                    break;
+                                case 4:
+                                    temp.expected = cell.Range.Text;
+                                    break;
+                                case 5:
+                                    temp.result1 = cell.Range.Text;
+                                    break;
+                                case 6:
+                                    temp.result2 = cell.Range.Text;
+                                    break;
+                            }
+                        }
+                        cellNum++;
                     }
-                    data.Add(temp);
+                    if(!isHeader)
+                        data.Add(temp);
                 }
             }
 
-            Console.WriteLine(data[0].nLot);
-            Console.WriteLine(data[0].nDocument);
-            Console.WriteLine(data[0].champ);
-            Console.WriteLine(data[0].test);
-            Console.WriteLine(data[0].expected);
-            Console.WriteLine(data[0].result1);
-            Console.WriteLine(data[0].result2);
-
-            Console.WriteLine(data[1].nLot);
-            Console.WriteLine(data[1].nDocument);
-            Console.WriteLine(data[1].champ);
-            Console.WriteLine(data[1].test);
-            Console.WriteLine(data[1].expected);
-            Console.WriteLine(data[1].result1);
-            Console.WriteLine(data[1].result2);
+            foreach(TestCase tc in data)
+            {
+                Console.WriteLine(tc.nLot);
+                Console.WriteLine(tc.nDocument);
+                Console.WriteLine(tc.champ);
+                Console.WriteLine(tc.test);
+                Console.WriteLine(tc.expected);
+                Console.WriteLine(tc.result1);
+                Console.WriteLine(tc.result2);
+            }
+            
 
             Console.ReadLine();
 
