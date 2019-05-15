@@ -72,11 +72,11 @@ namespace WordReader
 
             foreach(Table table in doc.Tables)
             {
-                for(int i = 0; i < table.Rows.Count; i++)
+                for(int i = 1; i <= table.Rows.Count; i++)
                 {
                     TestCase temp = new TestCase();
                     int cellNum = 0;
-                    for(int j = 0; j < table.Columns.Count; j++)
+                    for(int j = 1; j <= table.Columns.Count; j++)
                     {
                         Cell cell = table.Cell(i, j);
                         switch (cellNum)
@@ -98,7 +98,7 @@ namespace WordReader
                             break;
                             case 5:
                                 temp.result1 = (cell.Range.Text == "OK");
-                                break;
+                            break;
                             case 6:
                                 temp.result2 = (cell.Range.Text == "OK");
                             break;
@@ -118,7 +118,14 @@ namespace WordReader
             Console.WriteLine(data[0].expected);
             Console.WriteLine(data[0].result1);
             Console.WriteLine(data[0].result2);
-            
+
+            Console.WriteLine(data[1].nLot);
+            Console.WriteLine(data[1].nDocument);
+            Console.WriteLine(data[1].champ);
+            Console.WriteLine(data[1].test);
+            Console.WriteLine(data[1].expected);
+            Console.WriteLine(data[1].result1);
+            Console.WriteLine(data[1].result2);
 
             Console.ReadLine();
 
