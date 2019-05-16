@@ -6,13 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 //word API
-using Word = Microsoft.Office.Interop.Word;
+using Microsoft.Office.Interop.Word;
 
 //MTM/TFS API
 using Microsoft.TeamFoundation;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.TestManagement.Client;
 using Microsoft.TeamFoundation.WorkItemTracking;
+
 
 
 
@@ -26,6 +27,20 @@ using Microsoft.TeamFoundation.WorkItemTracking;
 
 namespace WordReader
 {
+
+    public struct TestCase
+    {
+
+        public string nLot,
+                      nDocument,
+                      champ,
+                      test,
+                      expected,
+                      result1,
+                      result2;
+
+                      
+    }
     class Program
     {
         //LOL
@@ -42,36 +57,90 @@ namespace WordReader
         static void Main(string[] args)
         {
 
-            Word.Application word = new Word.Application();
-            Word.Document doc = new Word.Document();
+            Application word = new Application();
+            Document doc = new Document();
 
             // Define an object to pass to the API for missing parameters
             object missing = System.Type.Missing;
-            doc = word.Documents.Open(@"D:\RQemploi\WordReader\TestDoc.docx",
+            doc = word.Documents.Open(@"D:\RQemploi\DA0_Devis_RAC_PAL18.docx",
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing);
 
-            List<string> data = new List<string>();
-            for (int i = 0; i < doc.Paragraphs.Count; i++)
+            List<TestCase> data = new List<TestCase>();
+
+            foreach(Table table in doc.Tables)
             {
-                string temp = doc.Paragraphs[i + 1].Range.Text.Trim();
-                if (temp != string.Empty)
-                    data.Add(temp);
+                for(int i = 1; i <= table.Rows.Count; i++)
+                {
+                    bool isHeader = false;
+                    TestCase temp = new TestCase();
+                    int cellNum = 0;
+                    for(int j = 1; j <= table.Columns.Count; j++)
+                    {
+                        
+                        Cell cell = null;
+                        try
+                        {
+                            cell = table.Cell(i, j);
+                        }
+                        catch (System.Runtime.InteropServices.COMException e)
+                        {
+                            isHeader = true;
+                        }
+                        if (!isHeader)
+                        {
+                            switch (cellNum)
+                            {
+                                case 0:
+                                    temp.nLot = cell.Range.Text;
+                                    break;
+                                case 1:
+                                    temp.nDocument = cell.Range.Text;
+                                    break;
+                                case 2:
+                                    temp.champ = cell.Range.Text;
+                                    break;
+                                case 3:
+                                    temp.test = cell.Range.Text;
+                                    break;
+                                case 4:
+                                    temp.expected = cell.Range.Text;
+                                    break;
+                                case 5:
+                                    temp.result1 = cell.Range.Text;
+                                    break;
+                                case 6:
+                                    temp.result2 = cell.Range.Text;
+                                    break;
+                            }
+                        }
+                        cellNum++;
+                    }
+                    if(!isHeader)
+                        data.Add(temp);
+                }
             }
 
-            for (int i = 0; i < doc.Paragraphs.Count; i++)
+            foreach(TestCase tc in data)
             {
-                Console.WriteLine(data[i]);
+                Console.WriteLine(tc.nLot);
+                Console.WriteLine(tc.nDocument);
+                Console.WriteLine(tc.champ);
+                Console.WriteLine(tc.test);
+                Console.WriteLine(tc.expected);
+                Console.WriteLine(tc.result1);
+                Console.WriteLine(tc.result2);
             }
+            
 
             Console.ReadLine();
 
-            ((Word._Document)doc).Close();
-            ((Word._Application)word).Quit();
+            ((_Document)doc).Close();
+            ((_Application)word).Quit();
 
-
+            /*
             //MTM
 
             string serverurl = "http://localhost:8080/tfs";
@@ -125,7 +194,7 @@ namespace WordReader
             //saving the test plan
             plan.Save();
 
-
+            */
         }
 
     }
