@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Word = Microsoft.Office.Interop.Word;
 
 //MTM/TFS API
+using Microsoft.TeamFoundation;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.TestManagement.Client;
 using Microsoft.TeamFoundation.WorkItemTracking;
