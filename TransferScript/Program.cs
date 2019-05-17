@@ -28,7 +28,7 @@ using Microsoft.TeamFoundation.WorkItemTracking;
 namespace WordReader
 {
 
-    public struct TestCase
+    public struct TestStep
     {
 
         public string nLot,
@@ -68,14 +68,14 @@ namespace WordReader
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing);
 
-            List<TestCase> data = new List<TestCase>();
+            List<TestStep> data = new List<TestStep>();
 
             foreach(Table table in doc.Tables)
             {
                 for(int i = 1; i <= table.Rows.Count; i++)
                 {
                     bool isHeader = false;
-                    TestCase temp = new TestCase();
+                    TestStep temp = new TestStep();
                     int cellNum = 0;
                     for(int j = 1; j <= table.Columns.Count; j++)
                     {
@@ -123,15 +123,15 @@ namespace WordReader
                 }
             }
 
-            foreach(TestCase tc in data)
+            foreach(TestStep ts in data)
             {
-                Console.WriteLine(tc.nLot);
-                Console.WriteLine(tc.nDocument);
-                Console.WriteLine(tc.champ);
-                Console.WriteLine(tc.test);
-                Console.WriteLine(tc.expected);
-                Console.WriteLine(tc.result1);
-                Console.WriteLine(tc.result2);
+                Console.WriteLine(ts.nLot);
+                Console.WriteLine(ts.nDocument);
+                Console.WriteLine(ts.champ);
+                Console.WriteLine(ts.test);
+                Console.WriteLine(ts.expected);
+                Console.WriteLine(ts.result1);
+                Console.WriteLine(ts.result2);
             }
             
 
@@ -140,7 +140,7 @@ namespace WordReader
             ((_Document)doc).Close();
             ((_Application)word).Quit();
 
-            /*
+            
             //MTM
 
             string serverurl = "http://localhost:8080/tfs";
@@ -194,7 +194,7 @@ namespace WordReader
             //saving the test plan
             plan.Save();
 
-            */
+            
         }
 
     }
