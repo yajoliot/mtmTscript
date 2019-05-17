@@ -41,9 +41,18 @@ namespace WordReader
 
                       
     }
+
+    public struct TestCase
+    {
+        public List<TestStep> testSteps;
+    }
+   
+    
+
+    
     class Program
     {
-        //LOL
+        
 
         static ITestManagementTeamProject GetProject(string serverUrl, string project)
         {
@@ -140,9 +149,11 @@ namespace WordReader
             ((_Document)doc).Close();
             ((_Application)word).Quit();
 
-            
+
             //MTM
 
+               
+            
             string serverurl = "http://localhost:8080/tfs";
             string project = "project name on tfs server";
             ITestManagementTeamProject proj = GetProject(serverurl, project);
