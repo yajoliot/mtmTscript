@@ -44,6 +44,7 @@ namespace WordReader
 
     public struct TestCase
     {
+        string Title;
         public List<TestStep> testSteps;
     }
    
@@ -71,7 +72,7 @@ namespace WordReader
 
             // Define an object to pass to the API for missing parameters
             object missing = System.Type.Missing;
-            doc = word.Documents.Open(@"D:\RQemploi\DA0_Devis_RAC_PAL18.docx",
+            doc = word.Documents.Open(@"D:\RQemploi\DA0_Devis_RAC_PAL19.docx",
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
@@ -152,17 +153,20 @@ namespace WordReader
 
             //MTM
 
-               
-            
-            string serverurl = "http://localhost:8080/tfs";
-            string project = "project name on tfs server";
+
+            string productName = "";
+            string productYear = "";
+            string serverurl = "http://gestsource.services.mrq:8080/tfs";
+            string project = @"gestsource.services.mrq\RQ\R4-CAB2D-RAC";
             ITestManagementTeamProject proj = GetProject(serverurl, project);
 
             //create plan
             ITestPlan plan = proj.TestPlans.Create();
-            plan.Name = "sprint name";
+            plan.Name = $"Liv 2019 - DAO UT {productName} ({productYear})";
             plan.StartDate = DateTime.Now;
             plan.EndDate = DateTime.Now.AddMonths(1);
+            plan.Iteration = @"R4-CAB2D\Équipe Caribou";
+            plan.AreaPath = @"R4-CAB2D\Mai-2019";
             plan.Save();
 
             //create suite for plan
