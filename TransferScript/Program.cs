@@ -44,7 +44,6 @@ namespace WordReader
 
     public struct TestCase
     {
-        string Title;
         public List<TestStep> testSteps;
     }
    
@@ -61,6 +60,17 @@ namespace WordReader
             ITestManagementService tms = tfs.GetService<ITestManagementService>();
 
             return tms.GetTeamProject(project);
+        }
+
+        static IStaticTestSuite Traversal(ITestSuiteCollection suitesCollection, string desiredSuiteTitle)
+        {
+            foreach (IStaticTestSuite childSuite in suitesCollection)
+            {
+                if (childSuite.Title == desiredSuiteTitle)
+                    return childSuite;
+            }
+
+            return null;
         }
 
 
@@ -153,38 +163,25 @@ namespace WordReader
 
             //MTM
 
-
-            string productName = "";
-            string productYear = "";
+            string prodName = "TP01";
+            string prodYear = "2018-11";
+            string testPlanName = $"Liv 2019 - DAO UT {prodName} ({prodYear})";
+            int idTestPlan = 0;
             string serverurl = "http://gestsource.services.mrq:8080/tfs";
             string project = @"gestsource.services.mrq\RQ\R4-CAB2D-RAC";
             ITestManagementTeamProject proj = GetProject(serverurl, project);
 
-            //create plan
-            ITestPlan plan = proj.TestPlans.Create();
-            plan.Name = $"Liv 2019 - DAO UT {productName} ({productYear})";
-            plan.StartDate = DateTime.Now;
-            plan.EndDate = DateTime.Now.AddMonths(1);
-            plan.Iteration = @"R4-CAB2D\Équipe Caribou";
-            plan.AreaPath = @"R4-CAB2D\Mai-2019";
-            plan.Save();
+            // Get a Test Plan by its Id
+            int myPlansId = idTestPlan;
+            ITestPlan plan = proj.TestPlans.Find(myPlansId);
 
-            //create suite for plan
-            IStaticTestSuite suite = proj.TestSuites.CreateStatic();
-            suite.Title = "Types of test cases";
 
-            plan.RootSuite.Entries.Add(suite);
-            plan.Save();
+            IStaticTestSuite foundSuite = Traversal(plan.RootSuite.SubSuites, testPlanName);
+            foundSuite = Traversal(foundSuite.SubSuites, "Changement annuel et non régression");
+            foundSuite = Traversal(foundSuite.SubSuites, "B- AD'DOC");
+            foundSuite = Traversal(foundSuite.SubSuites, "5- Rejets d'OCR");
 
-            //Config for adding test cases to suite
-            ITestConfiguration defaultConfig = null;
 
-            foreach (ITestConfiguration config in proj.TestConfigurations.Query(
-                "Select * from TestConfiguration"))
-            {
-                defaultConfig = config;
-                break;
-            }
 
             //creating the test case to the suite
             ITestCase testCase = proj.TestCases.Create();
