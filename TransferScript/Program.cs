@@ -23,7 +23,6 @@ using Microsoft.TeamFoundation.WorkItemTracking;
 
 //for client application:
 //https://docs.microsoft.com/en-us/previous-versions/dd998375%28v%3dvs.140%29
-//Classes: HierarchyEntry and TestActionCollection
 
 namespace WordReader
 {
@@ -45,6 +44,9 @@ namespace WordReader
     public struct TestCase
     {
         public List<TestStep> testSteps;
+        public string Title;
+
+        
     }
    
     
@@ -82,13 +84,13 @@ namespace WordReader
 
             // Define an object to pass to the API for missing parameters
             object missing = System.Type.Missing;
-            doc = word.Documents.Open(@"D:\RQemploi\DA0_Devis_RAC_PAL19.docx",
+            doc = word.Documents.Open(@"D:\RQemploi\TP-1TestSample.docx",
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing);
 
-            List<TestStep> data = new List<TestStep>();
+            List<TestStep> testSteps = new List<TestStep>();
 
             foreach(Table table in doc.Tables)
             {
@@ -139,19 +141,48 @@ namespace WordReader
                         cellNum++;
                     }
                     if(!isHeader)
-                        data.Add(temp);
+                        testSteps.Add(temp);
                 }
             }
 
-            foreach(TestStep ts in data)
+            
+
+            List<TestCase> testCases = new List<TestCase>();
+            string currentChamp = String.Empty;
+            TestCase tempTestCase = new TestCase{ testSteps = new List<TestStep>() };
+
+            foreach (TestStep ts in testSteps)
             {
-                Console.WriteLine(ts.nLot);
-                Console.WriteLine(ts.nDocument);
-                Console.WriteLine(ts.champ);
-                Console.WriteLine(ts.test);
-                Console.WriteLine(ts.expected);
-                Console.WriteLine(ts.result1);
-                Console.WriteLine(ts.result2);
+
+                if (ts.champ == currentChamp)
+                {
+                    tempTestCase.testSteps.Add(ts);
+                }
+                else if (ts.champ == null)
+                {
+                    currentChamp = "NULL";
+                    tempTestCase.testSteps.Add(ts);
+                }
+                else if(ts.champ != currentChamp)
+                {
+                    tempTestCase.Title = currentChamp;
+                    testCases.Add(tempTestCase);
+                    tempTestCase = new TestCase { testSteps = new List<TestStep>() };
+                    tempTestCase.testSteps.Add(ts);
+                    currentChamp = ts.champ;
+                }
+                
+            }
+
+            foreach(TestCase tc in testCases)
+            {
+                Console.WriteLine(tc.Title);
+                foreach(TestStep ts in tc.testSteps)
+                {
+                    Console.WriteLine(ts.test);
+                    Console.WriteLine(ts.expected);
+                }
+                Console.WriteLine("-------------------------");
             }
             
 
@@ -197,11 +228,12 @@ namespace WordReader
             testCase.Save();
 
             //setting configs i guess?
+            ITestConfiguration defaultConfig = null;
             IdAndName defaultConfigidAndName = new IdAndName(defaultConfig.Id, defaultConfig.Name);
-            suite.SetDefaultConfigurations(new IdAndName[] { defaultConfigidAndName });
+            foundSuite.SetDefaultConfigurations(new IdAndName[] { defaultConfigidAndName });
 
             //adding test cases to the new suite
-            suite.Entries.Add(testCase);
+            foundSuite.Entries.Add(testCase);
 
             //saving the test plan
             plan.Save();
