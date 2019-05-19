@@ -183,9 +183,9 @@ namespace WordReader
 
 
 
-            //creating the test case to the suite
+            //creating the test case
             ITestCase testCase = proj.TestCases.Create();
-            testCase.Title = "Verify X";
+            testCase.Title = "TEST";
 
             //adding a test step to the test case
             ITestStep testStep = testCase.CreateTestStep();
@@ -197,11 +197,12 @@ namespace WordReader
             testCase.Save();
 
             //setting configs i guess?
+            ITestConfiguration defaultConfig = null;
             IdAndName defaultConfigidAndName = new IdAndName(defaultConfig.Id, defaultConfig.Name);
-            suite.SetDefaultConfigurations(new IdAndName[] { defaultConfigidAndName });
+            foundSuite.SetDefaultConfigurations(new IdAndName[] { defaultConfigidAndName });
 
-            //adding test cases to the new suite
-            suite.Entries.Add(testCase);
+            //adding test case to the new suite
+            foundSuite.Entries.Add(testCase);
 
             //saving the test plan
             plan.Save();
