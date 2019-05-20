@@ -206,34 +206,42 @@ namespace WordReader
             int myPlansId = idTestPlan;
             ITestPlan plan = proj.TestPlans.Find(myPlansId);
 
-
+            //get the suite
             IStaticTestSuite foundSuite = Traversal(plan.RootSuite.SubSuites, testPlanName);
             foundSuite = Traversal(foundSuite.SubSuites, "Changement annuel et non régression");
             foundSuite = Traversal(foundSuite.SubSuites, "B- AD'DOC");
             foundSuite = Traversal(foundSuite.SubSuites, "5- Rejets d'OCR");
 
-
-
-            //creating the test case to the suite
-            ITestCase testCase = proj.TestCases.Create();
-            testCase.Title = "Verify X";
-
-            //adding a test step to the test case
-            ITestStep testStep = testCase.CreateTestStep();
-            testStep.Title = "Test step title";
-            testStep.ExpectedResult = "Test step expected result";
-            testCase.Actions.Add(testStep);
-
-            //saving the test case to the project
-            testCase.Save();
-
+            //INITS
+            ITestCase testCase = null;
+            ITestStep testStep = null;
             //setting configs i guess?
             ITestConfiguration defaultConfig = null;
             IdAndName defaultConfigidAndName = new IdAndName(defaultConfig.Id, defaultConfig.Name);
             foundSuite.SetDefaultConfigurations(new IdAndName[] { defaultConfigidAndName });
+            if (defaultConfig == null) Console.WriteLine("defaultConfig = null");
 
-            //adding test cases to the new suite
-            foundSuite.Entries.Add(testCase);
+
+            //create test cases with all steps
+            foreach (TestCase tc in testCases)
+            {
+                //creating the test case to the suite
+                testCase = proj.TestCases.Create();
+                testCase.Title = tc.Title;
+
+                //Adding steps to testCase
+                foreach (TestStep ts in tc.testSteps)
+                {
+                    testStep = testCase.CreateTestStep();
+                    testStep.Title = ts.test;
+                    testStep.ExpectedResult = ts.expected;
+                    testCase.Actions.Add(testStep);
+                }
+
+                testCase.Save();
+                //adding test case to the found suite
+                foundSuite.Entries.Add(testCase);
+            }
 
             //saving the test plan
             plan.Save();
