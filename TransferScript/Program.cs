@@ -84,7 +84,7 @@ namespace WordReader
 
             // Define an object to pass to the API for missing parameters
             object missing = System.Type.Missing;
-            doc = word.Documents.Open(@"D:\RQemploi\TP-1TestSample.docx",
+            doc = word.Documents.Open(@"D:\RQemploi\DA0 TP-1-P1.docx",
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
                     ref missing, ref missing, ref missing, ref missing,
@@ -140,8 +140,14 @@ namespace WordReader
                         }
                         cellNum++;
                     }
-                    if(!isHeader)
+                    if (!isHeader)
+                    {
                         testSteps.Add(temp);
+                        if(testSteps.Count % 20 == 0)
+                            Console.WriteLine($"Nombre de cas de tests lu: {testSteps.Count}");
+                    }
+                        
+                        
                 }
             }
 
@@ -184,8 +190,8 @@ namespace WordReader
                 }
                 Console.WriteLine("-------------------------");
             }
-            
 
+            Console.WriteLine($"nombre de champs total: {testCases.Count}");
             Console.ReadLine();
 
             ((_Document)doc).Close();
