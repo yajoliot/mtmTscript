@@ -204,9 +204,9 @@ namespace WordReader
             string prodYear = "2018-11";
             string testPlanName = $"Liv 2019 - DAO UT {prodName} ({prodYear})";
             int idTestPlan = 0;
-            string serverurl = "http://gestsource.services.mrq:8080/tfs";
+            string serverUrl = "http://gestsource.services.mrq:8080/tfs";
             string project = @"gestsource.services.mrq\RQ\R4-CAB2D-RAC";
-            ITestManagementTeamProject proj = GetProject(serverurl, project);
+            ITestManagementTeamProject proj = GetProject(serverUrl, project);
 
             // Get a Test Plan by its Id
             int myPlansId = idTestPlan;
