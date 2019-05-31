@@ -13,9 +13,12 @@ using Microsoft.TeamFoundation;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.TestManagement.Client;
 using Microsoft.TeamFoundation.WorkItemTracking;
+using Microsoft.TeamFoundation.Common.Internal;
+using System.Net;
 
 
-
+//Test Authentication
+//https://www.codeproject.com/Articles/1119253/Clone-VSTS-TFS-Test-Suite-With-TFS-API
 
 //Test Management API
 //for web tfs api:
@@ -56,10 +59,14 @@ namespace WordReader
     {
         
 
-        static ITestManagementTeamProject GetProject(string serverUrl, string project)
+        static ITestManagementTeamProject GetProject(string serverUrl, string project, string pat)
         {
-            TfsTeamProjectCollection tfs = new TfsTeamProjectCollection(TfsTeamProjectCollection.GetFullyQualifiedUriForName(serverUrl));
-            ITestManagementService tms = tfs.GetService<ITestManagementService>();
+            NetworkCredential networkCredentials = new NetworkCredential("username", "password", "domain");
+
+
+            var myTFSTeamProjectCollection = new TfsTeamProjectCollection(TfsTeamProjectCollection.GetFullyQualifiedUriForName(serverUrl), networkCredentials);
+
+            ITestManagementService tms = myTFSTeamProjectCollection.GetService<ITestManagementService>;
 
             return tms.GetTeamProject(project);
         }
@@ -204,9 +211,10 @@ namespace WordReader
             string prodYear = "2018-11";
             string testPlanName = $"Liv 2019 - DAO UT {prodName} ({prodYear})";
             int idTestPlan = 0;
+            string pat = "";
             string serverUrl = "http://gestsource.services.mrq:8080/tfs";
             string project = @"gestsource.services.mrq\RQ\R4-CAB2D-RAC";
-            ITestManagementTeamProject proj = GetProject(serverUrl, project);
+            ITestManagementTeamProject proj = GetProject(serverUrl, project, pat);
 
             // Get a Test Plan by its Id
             int myPlansId = idTestPlan;
