@@ -22,6 +22,9 @@ using Microsoft.VisualStudio.Services.Client;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.VisualStudio.Services.WebApi;
 
+//HTTP
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 
 //Test Management API
@@ -79,9 +82,9 @@ namespace WordReader
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64Token);
 
-                var requestMessage = new HttpRequestMessage(HttpMthod.Post, $"https://{serverUrl}/DefaultCollection/{projetc}/_testManagement");
-                requestMessage.Content = new StringContent { /* test Title etc...*/, Encoding.UTF8, "application/json" };
-                using (HttpResponseMessage response = client.sendAsync(requestMessage).Result)
+                var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"https://{serverUrl}/DefaultCollection/{project}/_testManagement");
+                requestMessage.Content = new StringContent { "Content", Encoding.UTF8, "application/json" };
+                using (HttpResponseMessage response = client.SendAsync(requestMessage).Result)
                 {
                     response.EnsureSuccessStatusCode();
                 }
